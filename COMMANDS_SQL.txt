@@ -1,0 +1,136 @@
+DDL(DATA DEFINATION LANGUAGE)
+------------------------------------------------------------------------
+CREATE,ALTER,DROP,TRUNCATE,RENAME
+------------------------------------------------------------------------
+1)CREATE
+---------
+syntax:- create table <table name> (col1 datatype,col2 datatype,.......);
+
+EX: CREATE TABLE STUDENT_DETAILS
+    (S_ID NUMBER(10),S_FIRSTNAME VARCHAR2(10),S_LASTNAME VARCHAR2(10),
+     S_EMAIL_ID VARCHAR2(30),S_MOBILE_NO NUMBER(10));
+
+2)ALTER:-ADD,MODIFY,RENAME,DROP.
+-----------------------------------
+	a)add:- alter table <table name> add(col1 datatype,col2 			datatype,........);
+		EX: ALTER TABLE STUDENT_DETAILS ADD(GENDER CHAR);
+
+	b)modify:- alter table <table name> modify(col1 datatype,col2 					datatype,........);
+		EX: ALTER TABLE STUDENT_DETAILS MODIFY(GENDER VARCHAR2			(10));
+	note:- 1)through modify we can increase and decrease the length and change the datatype.
+		2)column to be modified must be empty to decrease precision or scale.
+		3)column to be modified must be empty to change datatype.
+
+	c)rename:- alter table <table name> rename column <old col name> 			to <new col name>;
+		EX:ALTER TABLE STUDENT_DETAILS RENAME COLUMN EMAIL_ID TO  			EMAIL;
+	
+	d)drop:- for single column drop
+       		alter table <table name> drop column <col name>;
+       		EX: ALTER TABLE STUDENT_DETAILS DROP COLUMN EMAIL;
+
+       		for multiple column drop
+       		alter table <table name> drop(colname1,colname2,.....);
+		EX: ALTER TABLE STUDENT_DETAILS DROP		(MIDDLE_NAME,MOBILE_NO);
+------------------------------------------------------------------------
+3)TRUNCATE:-
+  ----------
+		IT IS USED TO REMOVE ALL RECORDS FROM TABLE,DATA CAN'T 		GETBACK.
+		syntax:- truncate table <table name>;
+		EX:TRUNCATE TABLE STUDENT_DETAILS;
+------------------------------------------------------------------------
+4)RENAME:
+  -------
+		IT IS USED TO RENAME THE TABLE NAME.
+		syntax:- rename <old name> to <new name>;
+		EX: RENAME STUDENT_DETAILS TO STUDENT;
+------------------------------------------------------------------------
+5)DROP:
+  -------
+	IT IS USED TO DROP THE TABLE FROM THE DATABASE.
+        IF WE USE PURGE COMMAND THE TABLE PERMANANTLY DROP FROM RECYCLEBIN.
+	syntax:- drop table <table name> [purge];
+	EX: DROP TABLE STUDENT_DETAILS PURGE;
+	syntax:- drop table <table name> 
+	EX: DROP TABLE STUDENT_DETAILS
+	NOTE:FLASHBACK IS USED TO GET DROP TABLE BACK;
+       	DESC RECYCLEBIN;
+       	SELECT OBJECTS_NAME,ORIGINAL_NAME FROM RECYCLEBIN;
+       	FLASHBACK TABLE <TABLE NAME> TO BEFORE DROP;
+	FLASHBACK TABLE STUDENT_DETAILS TO BEFORE DROP;
+------------------------------------------------------------------------
+DML(DATA MANUPULATION LANGUAGE)
+------------------------------------------------------------------------
+1)INSERT:
+  ------
+	It is used to insert the record into a table.
+	syntax:- insert into <table name> values(val1,val2,......);
+	EX: INSERT INTO STUDENT_DETAILS VALUES(1,'JOHN','RORD');
+         or
+         insert into <table name> [list of col1,col2,....] values (list 		of val1,val2,...);
+	EX: INSERT INTO STUDENT_DETAILS (ID,FIRST_NAME) VALUES 			(2,'JHONNY');
+
+2)UPDATE:
+  -------
+	It is used to modify the existing value in a table.
+	syntax:- update <table name> set colname1=value,	[colname2=value,...][where condition];
+	EX:  UPDATE EMP SET EMPNO=7900 WHERE EMPNO=7934;
+	EX:  UPDATE EMP SET EMPNO=7900;
+
+3)DELETE:
+  -------
+	It is used to remove a record from a table.
+        It is use to delete the record by record.
+        The deleted record will be stored in rollback segments.
+        we can get back the deleted record by using rollback.
+	syntax:- delete [from] <table name> [where condition];
+	EX: DELETE FROM EMP;
+        EX: DELETE FROM EMP WHERE EMPNO=7900;
+
+4)INSERTALL:
+  ----------
+	It is used to insert the data into a multiple tables at a time.
+        It is introduced in oracle 8i
+        Insert all must be used with select statement
+	ex:- insertall 
+     	into d1 values(deptno,dname,loc)
+     	into d2 values(deptno,dname,loc)
+     	into d3 values(deptno,dname,loc)
+     	select * from dept
+5)MERGE:
+----------
+The MERGE statement is used to SELECT rows from one or more Source for UPDATE or INSERT into one or more table.
+The MERGE statement is convenient to combine multiple operations and avoid multiple INSERT, UPDATE, DELETE.
+MERGE is a deterministic statement, using which the same row of the target can be transacted multiple times in the same MERGE statement. 
+
+Sql>Create Table Ebonus (
+Empno NUMBER, Bonus NUMBER DEFAULT 100
+);
+
+Sql> Insert into Ebonus (Empno) (Select E.Empno From Emp E Where Job='SALESMAN');
+
+Sql> MERGE into Ebonus B
+Using (Select Empno,Sal,Deptno
+From Emp Where Deptno = 30) S On (B.Empno = S.Empno) 
+When MATCHED THEN UPDATE
+Set B.Bonus=B.Bonus + S.Sal*0.1
+Where (S.Sal>4000)
+WHEN NOT MATCHED THEN
+INSERT(B.Empno,B.Bonus)
+VALUES( S.Empno,S.Sal * 0.1)
+Where ( S.Sal <=4000);
+-------------------------------------------------------------------------------------
+
+DRL/DQL
+-------
+SELECT-----It is used to retrive the data from the database objects(table,view,or synonym).
+
+DCL
+-------
+GRANT
+REVOKE
+
+TCL
+-------
+COMMIT
+ROLLBACK
+SAVEPOINT

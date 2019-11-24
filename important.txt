@@ -1,0 +1,38 @@
+To Connect user as a Sys DBA
+
+conn/connect: SYS as SYSDBA
+password:12345678
+----------------------------------------------------
+To see all system created tables in database
+
+desc tab;
+select * from tab; 
+----------------------------------------------------
+To see table structure
+desc dba_users;
+
+----------------------------------------------------
+To See user or created user in sysdba
+
+select username from dba_users;
+
+------------------------------------------------------ 
+TO CREATE USER AND ASSIGN PRIVILEAGES TO USER
+
+CREATE USER <USERNAME> IDENTIFIED BY PASSWORD;
+
+GRANT CONNECT,RESOURCE TO <USERNAME>;
+
+connect: it is used to grant the database access permission.
+
+resource: it is used to grant the database objects permission.
+
+
+TO PROVIDE TABLE SPACE TO USER FOR STORING DATA
+-------------------------------------------------------
+ALTER USER <username> QUOTA 100M ON <tablespace name> 
+ 
+GRANT UNLIMITED TABLESPACE TO <username>
+--------------------------------------------------------
+
+
